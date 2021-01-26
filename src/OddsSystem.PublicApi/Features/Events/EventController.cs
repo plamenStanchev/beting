@@ -21,74 +21,7 @@
 
         [HttpGet]
         [Route(nameof(List))]
-        public async Task<ActionResult<EventListResponse>> List(
-            CancellationToken cancellationToken = default)
-            => this.Ok(await this.AggregateResponseData(cancellationToken));
-
-        [HttpPost]
-        [Route(nameof(Create))]
-
-        public async Task<ActionResult<EventListResponse>> Create(
-            EventViewMode eventViewMode,
-            CancellationToken cancellationToken = default)
-        {
-            var Event = new Event(
-                eventViewMode.Name,
-                eventViewMode.OddsForFirstTeam,
-                eventViewMode.OddsForFirstTeam,
-                eventViewMode.OddsForSecondTeam,
-                eventViewMode.EventStartDate);
-            await this.eventRepository.AddAsync(Event);
-            var eventResponse = new EventListResponse();
-            var result = await this.eventRepository.SaveChangesAsync();
-            if (result == 0)
-            {
-                eventResponse.ErrorMesage = "Ther was an Error";
-                eventResponse.Succeeded = false;
-            }
-            else
-            {
-                eventResponse = await this.AggregateResponseData(cancellationToken);
-            }
-
-            return eventResponse;
-        }
-
-        [HttpDelete]
-        [Route(nameof(Delete))]
-        public async Task<ActionResult<EventListResponse>> Delete(
-            int id,
-            CancellationToken cancellationToken = default)
-        {
-            var existingEvent = await this.eventRepository.All()
-                .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
-            this.eventRepository.Delete(existingEvent);
-            await this.eventRepository.SaveChangesAsync(cancellationToken);
-            return this.Ok(await this.AggregateResponseData(cancellationToken));
-        }
-
-        [HttpPatch]
-        [Route(nameof(Update))]
-        public async Task<ActionResult<EventListResponse>> Update(
-            EventViewMode eventViewMode,
-            CancellationToken cancellationToken = default)
-        {
-            var existingEvent = await this.eventRepository.All()
-                .FirstOrDefaultAsync(e => e.Id == eventViewMode.Id, cancellationToken);
-
-            existingEvent.UpdateDetails(
-                eventViewMode.Name,
-                eventViewMode.OddsForFirstTeam,
-                eventViewMode.OddsForDraw,
-                eventViewMode.OddsForSecondTeam,
-                eventViewMode.EventStartDate);
-            this.eventRepository.Update(existingEvent);
-            var result = await this.eventRepository.SaveChangesAsync(cancellationToken);
-            return this.Ok(await this.AggregateResponseData(cancellationToken));
-        }
-
-        private async Task<EventListResponse> AggregateResponseData(
-            CancellationToken cancellationToken = default)
+        public async Task<ActionResult<EventListResponse>> List(CancellationToken cancellationToken = default)
         {
             var events = await this.eventRepository.All().Select(e => new EventViewMode()
             {
@@ -100,7 +33,91 @@
                 OddsForSecondTeam = e.OddsForSecondTeam,
             }).ToListAsync();
 
-            return new EventListResponse() { Events = events, Succeeded = true };
+            var eventResponse = new EventListResponse()
+            {
+                Events = events,
+                Succeeded = true,
+            };
+
+            return this.Ok(eventResponse);
+        }
+
+        [HttpPost]
+        [Route(nameof(Create))]
+
+        public async Task<ActionResult<EventModelResponse>> Create(
+            EventViewMode eventViewMode,
+            CancellationToken cancellationToken = default)
+        {
+            var @event = new Event(
+                eventViewMode.Name,
+                eventViewMode.OddsForFirstTeam,
+                eventViewMode.OddsForFirstTeam,
+                eventViewMode.OddsForSecondTeam,
+                eventViewMode.EventStartDate);
+
+            await this.eventRepository.AddAsync(@event);
+            var eventResponse = new EventListResponse();
+            var result = await this.eventRepository.SaveChangesAsync();
+            var eventModelResponse = this.MapResponseModel(@event);
+
+            if (result == 0)
+            {
+                eventModelResponse.ErrorMesage = "Ther was an Error";
+                eventModelResponse.Succeeded = false;
+            }
+
+            return eventModelResponse;
+        }
+
+        [HttpDelete]
+        [Route(nameof(Delete))]
+        public async Task<ActionResult> Delete(
+            [FromBody] int Id,
+            CancellationToken cancellationToken = default)
+        {
+            var existingEvent = await this.eventRepository.All()
+                .FirstOrDefaultAsync(e => e.Id == Id, cancellationToken);
+            this.eventRepository.Delete(existingEvent);
+            await this.eventRepository.SaveChangesAsync(cancellationToken);
+            return this.Ok();
+        }
+
+        [HttpPatch]
+        [Route(nameof(Update))]
+        public async Task<ActionResult<EventModelResponse>> Update(
+            [FromBody]EventViewMode eventViewMode,
+            CancellationToken cancellationToken = default)
+        {
+            var existingEvent = await this.eventRepository.All()
+                .FirstOrDefaultAsync(e => e.Id == eventViewMode.Id, cancellationToken);
+
+            existingEvent.UpdateDetails(
+                eventViewMode.Name,
+                eventViewMode.OddsForFirstTeam,
+                eventViewMode.OddsForDraw,
+                eventViewMode.OddsForSecondTeam,
+                eventViewMode.EventStartDate);
+
+            this.eventRepository.Update(existingEvent);
+            var result = await this.eventRepository.SaveChangesAsync(cancellationToken);
+            var eventModelResponse = this.MapResponseModel(existingEvent);
+            return this.Ok(eventModelResponse);
+        }
+
+        private EventModelResponse MapResponseModel(Event @event)
+        {
+            var eventModelResponse = new EventModelResponse()
+            {
+                Id = @event.Id,
+                EventStartDate = @event.EventStartDate,
+                Name = @event.Name,
+                OddsForDraw = @event.OddsForDraw,
+                OddsForFirstTeam = @event.OddsForFirstTeam,
+                OddsForSecondTeam = @event.OddsForSecondTeam,
+                Succeeded = true,
+            };
+            return eventModelResponse;
         }
     }
 }

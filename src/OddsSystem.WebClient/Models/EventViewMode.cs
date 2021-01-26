@@ -1,4 +1,4 @@
-﻿namespace OddsSystem.PublicApi.Features.Events.Models
+﻿namespace OddsSystem.WebClient.Models
 {
     using System;
 

@@ -1,7 +1,9 @@
-﻿namespace OddsSystem.WebClient.Models
+﻿namespace OddsSystem.PublicApi.Features.Events.Models
 {
     using System;
-    public class EventViewMode
+    using OddsSystem.PublicApi.Features.BaseFeatures.Models;
+
+    public class EventModelResponse : BaseResponseModel
     {
         public int Id { get; set; }
 
