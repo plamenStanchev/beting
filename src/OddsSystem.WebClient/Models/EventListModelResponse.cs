@@ -1,6 +1,7 @@
 ﻿namespace OddsSystem.WebClient.Models
 {
     using System.Collections.Generic;
+
     public class EventListModelResponse
     {
         public IEnumerable<EventViewMode> Events { get; set; }
