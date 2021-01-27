@@ -21,7 +21,7 @@
                     <th>EventStartDate</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="table-body">
                 @foreach (var item in Model.OrderBy(e => e.Id))
                 {
                     <tr>
@@ -39,19 +39,18 @@
             </tbody>
         </table>
         <div class=" text-left">
-            <button>Add New</button>
+            <button onclick="CrateRow()">Add New</button>
         </div>
 
     </div>
 </body>
 
 <script>
-
     //for EditBtn
     $('#table').on('click', 'tbody td .edit', function (e) {
         fnResetControls();
         var clickedRow = $($(this).closest('td')).closest('tr');
-        $(clickedRow).find('td').each(function () { 
+        $(clickedRow).find('td').each(function () {
             if ($(this).hasClass('editable')) {
                 if ($(this).hasClass('text')) {
                     var html = fnCreateTextBox($(this).html(), 'name', 'text');
@@ -73,7 +72,7 @@
         });
 
 
-        $('#dtExample tbody tr td .save').removeClass('save').addClass('edit').html('Edit');
+        $('#table tbody tr td .save').removeClass('save').addClass('edit').html('Edit');
         $(clickedRow).find('td .edit').removeClass('edit').addClass('save').html('Save');
 
     });
@@ -87,14 +86,16 @@
         $.each(openedTextBox, function (k, $cell) {
             $(openedTextBox[k]).closest('td').html($cell.value);
         })
-    }
 
+
+    }
+    //Save
     $('#table').on('click', 'tbody td .save', function (e) {
 
         var clickedRow = $($(this).closest('td')).closest('tr');
         var patch = new Object();
         fnResetControls();
-        
+
         $(clickedRow).find('td').each(function () {
             if ($(this).hasClass('id')) {
                 patch.id = parseInt($(this).html().toString())
@@ -115,26 +116,65 @@
                 patch.eventStartDate = ($(this).html().toString())
             }
         });
-        
+
         var date = new Date(patch.eventStartDate)
         patch.eventStartDate = (date.getFullYear()) + "-" + (+date.getMonth() + 1) + '-' + (+date.getDate()) + 'T' + (+date.getHours()) + ':' + (+date.getMinutes())
-        console.log(patch);
-        console.log(JSON.stringify(patch))
-
 
         $.post({
-            url: 'https://localhost:44303/Event/Update',
+            url: '/Event/Update',
             data: JSON.stringify(patch),
             dataType: 'json',
             contentType: 'application/json',
             processData: false,
             accepts: 'application/json',
         });
-
-        $('#table tbody tr td .save').removeClass('save').addClass('edit').html('Edit');
-        
     });
 
+    //Delete
+    $('#table').on('click', 'tbody td .delete', function (e) {
+        var clickedRow = $($(this).closest('td')).closest('tr');
+        var id = 0;
+        $(clickedRow).find('td').each(function () {
+            if ($(this).hasClass('id')) {
+                id = parseInt($(this).html().toString())
+            }
+        });
+        clickedRow.remove();
+        console.log(id);
+        $.ajax({
+            type: 'DELETE',
+            url: '/Event/Delete/' + id
+        })
+        $(clickedRow.remove)
 
+    })
 
+    function CrateRow() {
+        console.log("hmhm");
+        var now = new Date;
+        var utc_timestamp = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
+            now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+        var date = new Date(utc_timestamp);
+        var formatedDate = (date.getFullYear()) + "-" + (+date.getMonth() + 1) + '-' + (+date.getDate()) + 'T' + (23) + ':' + (59)
+        var tablerb = ('#table tbody');
+
+        var event = {
+            name: "",
+            oddsForFirstTeam: 1,
+            oddsForDraw: 1,
+            oddsForSecondTeam: 1,
+            eventStartDate: formatedDate
+        }
+        $.post({
+            url: '/Event/Create',
+            data: JSON.stringify(event),
+            dataType: 'json',
+            contentType: 'application/json',
+            processData: false,
+            accepts: 'application/json',
+        })
+        setTimeout(function () {
+            location.reload();
+        },0500)
+    }
 </script>

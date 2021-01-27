@@ -53,10 +53,10 @@
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete(int Id)
+        public async Task<ActionResult> Delete(int id)
         {
             var client = this.clientFactory.CreateClient("Delete");
-            var stringContent = JsonConvert.SerializeObject(Id);
+            var stringContent = JsonConvert.SerializeObject(id);
 
             var request = new HttpRequestMessage(HttpMethod.Delete, DeleteUrl)
                 {
