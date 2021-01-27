@@ -21,12 +21,12 @@
             this.clientFactory = clientFactory;
         }
 
-        [HttpPatch]
+        [HttpPost]
         public async Task<IActionResult> Update([FromBody]EventViewMode eventViewMode)
         {
+
             var client = this.clientFactory.CreateClient("Update");
             var stringContent = JsonConvert.SerializeObject(eventViewMode);
-
             var request = new HttpRequestMessage(HttpMethod.Patch, UpdateUrl)
                 {
                     Content = new StringContent(stringContent, Encoding.UTF8, "application/json"),
