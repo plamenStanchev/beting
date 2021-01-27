@@ -26,15 +26,17 @@
                 @{ int counter = 1;}
                 @foreach (var item in Model.OrderBy(e => e.Id))
                 {
+
                     if (item.EventStartDate < DateTime.UtcNow)
                     {
                         <tr style="background-color:lightsalmon">
                             <td>@item.Name</td>
-                            <td>@item.OddsForFirstTeam</td>
-                            <td>@item.OddsForDraw</td>
-                            <td>@item.OddsForSecondTeam</td>
+                            <td onclick="clickedOdd(@item.Id,'OddsForFirstTeam',@item.OddsForFirstTeam)" class="first">@item.OddsForFirstTeam</td>
+                            <td onclick="clickedOdd(@item.Id,'OddsForDraw',@item.OddsForDraw)" class="draw">@item.OddsForDraw</td>
+                            <td onclick="clickedOdd(@item.Id,'OddsForSecondTeam',@item.OddsForSecondTeam)" class="second">@item.OddsForSecondTeam</td>
                             <td>@item.EventStartDate</td>
                         </tr>
+
                     }
                     else
                     {
@@ -42,9 +44,9 @@
                         {
                             <tr style="background-color:aliceblue">
                                 <td>@item.Name</td>
-                                <td>@item.OddsForFirstTeam</td>
-                                <td>@item.OddsForDraw</td>
-                                <td>@item.OddsForSecondTeam</td>
+                                <td onclick="clickedOdd(@item.Id,'OddsForFirstTeam',@item.OddsForFirstTeam)" class="first">@item.OddsForFirstTeam</td>
+                                <td onclick="clickedOdd(@item.Id,'OddsForDraw',@item.OddsForDraw)" class="draw">@item.OddsForDraw</td>
+                                <td onclick="clickedOdd(@item.Id,'OddsForSecondTeam',@item.OddsForSecondTeam)" class="second">@item.OddsForSecondTeam</td>
                                 <td>@item.EventStartDate</td>
                             </tr>
                         }
@@ -52,9 +54,9 @@
                         {
                             <tr style="background-color:honeydew">
                                 <td>@item.Name</td>
-                                <td>@item.OddsForFirstTeam</td>
-                                <td>@item.OddsForDraw</td>
-                                <td>@item.OddsForSecondTeam</td>
+                                <td onclick="clickedOdd(@item.Id,'OddsForFirstTeam',@item.OddsForFirstTeam)" class="first">@item.OddsForFirstTeam</td>
+                                <td onclick="clickedOdd(@item.Id,'OddsForDraw',@item.OddsForDraw)" class="draw">@item.OddsForDraw</td>
+                                <td onclick="clickedOdd(@item.Id,'OddsForSecondTeam',@item.OddsForSecondTeam)" class="second">@item.OddsForSecondTeam</td>
                                 <td>@item.EventStartDate</td>
                             </tr>
                         }
@@ -77,7 +79,11 @@
             "info": false,
             "order": false
         })
-        
     });
+    function clickedOdd(id, oddType, oddValue) {
+        console.log(`A:eventId - ${id}, B -OddType/OddFor ${oddType}, C -OddValue ${parseFloat(oddValue).toFixed(2)}`)
+    }
+
+
 </script>
 

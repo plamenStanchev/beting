@@ -57,7 +57,7 @@
                     $(this).html($(html))
                 }
                 if ($(this).hasClass('decaimal')) {
-                    var html = fnCreateTextBox($(this).html(), 'name','decaimal');
+                    var html = fnCreateTextBox($(this).html(), 'name', 'decaimal');
                     $(this).html($(html))
                 }
                 if ($(this).hasClass('number')) {
@@ -78,7 +78,7 @@
     });
 
     function fnCreateTextBox(value, fieldprop, type) {
-        return '<input data-field="' + fieldprop + '" type="'+ type + '" value="' + value + '" ></input>';
+        return '<input data-field="' + fieldprop + '" type="' + type + '" value="' + value + '" ></input>';
     }
 
     function fnResetControls() {
@@ -127,6 +127,13 @@
             contentType: 'application/json',
             processData: false,
             accepts: 'application/json',
+            success: function (data) {
+                if (data) {
+                    setTimeout(function () {
+                        location.reload();
+                    }, 0001);
+                }
+            }
         });
     });
 
@@ -172,9 +179,13 @@
             contentType: 'application/json',
             processData: false,
             accepts: 'application/json',
+            success: function (data) {
+                if (data) { 
+                    setTimeout(function () {
+                        location.reload(); 
+                    }, 0001);
+                }
+            }
         })
-        setTimeout(function () {
-            location.reload();
-        },0500)
     }
 </script>

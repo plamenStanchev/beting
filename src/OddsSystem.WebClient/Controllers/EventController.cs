@@ -32,7 +32,7 @@
                     Content = new StringContent(stringContent, Encoding.UTF8, "application/json"),
                 };
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
-            return this.RedirectPermanent(HomeUrl);
+            return this.Ok(true);
         }
 
         [HttpPost]
@@ -49,7 +49,7 @@
 
             var result = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
 
-            return this.RedirectPermanent(HomeUrl);
+            return this.Ok(true);
         }
 
         [HttpDelete]
