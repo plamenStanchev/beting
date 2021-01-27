@@ -67,7 +67,7 @@
                 eventModelResponse.Succeeded = false;
             }
 
-            return eventModelResponse;
+            return this.Ok(eventModelResponse);
         }
 
         [HttpDelete]
@@ -78,6 +78,11 @@
         {
             var existingEvent = await this.eventRepository.All()
                 .FirstOrDefaultAsync(e => e.Id == Id, cancellationToken);
+            if (existingEvent == null)
+            {
+                return this.Ok();
+            }
+
             this.eventRepository.Delete(existingEvent);
             await this.eventRepository.SaveChangesAsync(cancellationToken);
             return this.Ok();
@@ -102,6 +107,7 @@
             this.eventRepository.Update(existingEvent);
             var result = await this.eventRepository.SaveChangesAsync(cancellationToken);
             var eventModelResponse = this.MapResponseModel(existingEvent);
+
             return this.Ok(eventModelResponse);
         }
 

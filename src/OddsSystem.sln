@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddsSystem.Infrastructure",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddsSystem.PublicApi", "OddsSystem.PublicApi\OddsSystem.PublicApi.csproj", "{89EE85A5-FA85-4B3E-98D1-98E5A1F114FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OddsSystem.WebClient", "OddsSystem.WebClient\OddsSystem.WebClient.csproj", "{3775C7B2-CFBF-4BF5-8B03-4B56CE919CF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddsSystem.WebClient", "OddsSystem.WebClient\OddsSystem.WebClient.csproj", "{3775C7B2-CFBF-4BF5-8B03-4B56CE919CF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OddsSystem.Tests", "OddsSystem.Tests\OddsSystem.Tests.csproj", "{3074E4AA-BCF0-4A28-9C3A-9AF7B1B639B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{3775C7B2-CFBF-4BF5-8B03-4B56CE919CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3775C7B2-CFBF-4BF5-8B03-4B56CE919CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3775C7B2-CFBF-4BF5-8B03-4B56CE919CF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3074E4AA-BCF0-4A28-9C3A-9AF7B1B639B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3074E4AA-BCF0-4A28-9C3A-9AF7B1B639B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3074E4AA-BCF0-4A28-9C3A-9AF7B1B639B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3074E4AA-BCF0-4A28-9C3A-9AF7B1B639B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
