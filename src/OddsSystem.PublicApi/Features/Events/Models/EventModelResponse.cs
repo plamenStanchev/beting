@@ -1,8 +1,9 @@
 ﻿namespace OddsSystem.PublicApi.Features.Events.Models
 {
     using System;
+    using OddsSystem.PublicApi.Features.BaseFeatures.Models;
 
-    public class EventViewMode
+    public class EventModelResponse : BaseResponseModel
     {
         public int Id { get; set; }
 

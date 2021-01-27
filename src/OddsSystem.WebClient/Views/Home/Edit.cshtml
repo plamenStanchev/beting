@@ -1,0 +1,140 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model IEnumerable<EventViewMode>
+<head>
+</head>
+
+<body>
+    <div class="text-center">
+        <div class="text-right">
+            <input onclick="location.href='@Url.Action("Preview", "Home")'" type="button" name="button" class="button1" value="Preview Mode" />
+        </div>
+        <table width="100%" id="table" class="table table-bordered table-responsive table-hover cell-border" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>EventId</th>
+                    <th>EventName</th>
+                    <th>OddsForFirstTeam</th>
+                    <th>OddsForDraw</th>
+                    <th>OddsForSecondTeam</th>
+                    <th>EventStartDate</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderBy(e => e.Id))
+                {
+                    <tr>
+                        <td class="id">@item.Id</td>
+                        <td class="editable text">@item.Name</td>
+                        <td class="editable number oddsForFirstTeam">@item.OddsForFirstTeam</td>
+                        <td class="editable number oddsForDraw">@item.OddsForDraw</td>
+                        <td class="editable number oddsForSecondTeam">@item.OddsForSecondTeam</td>
+                        <td class="editable datetime">@item.EventStartDate</td>
+                        <td><button type="button" class="edit">Edit</button></td>
+                        <td><button type="button" class="delete">Delete</button></td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+        <div class=" text-left">
+            <button>Add New</button>
+        </div>
+
+    </div>
+</body>
+
+<script>
+
+    //for EditBtn
+    $('#table').on('click', 'tbody td .edit', function (e) {
+        fnResetControls();
+        var clickedRow = $($(this).closest('td')).closest('tr');
+        $(clickedRow).find('td').each(function () { 
+            if ($(this).hasClass('editable')) {
+                if ($(this).hasClass('text')) {
+                    var html = fnCreateTextBox($(this).html(), 'name', 'text');
+                    $(this).html($(html))
+                }
+                if ($(this).hasClass('decaimal')) {
+                    var html = fnCreateTextBox($(this).html(), 'name','decaimal');
+                    $(this).html($(html))
+                }
+                if ($(this).hasClass('number')) {
+                    var html = fnCreateTextBox($(this).html(), 'name', 'number');
+                    $(this).html($(html))
+                }
+                if ($(this).hasClass('datetime')) {
+                    var html = fnCreateTextBox($(this).html(), 'name', 'datetime');
+                    $(this).html($(html))
+                }
+            }
+        });
+
+
+        $('#dtExample tbody tr td .save').removeClass('save').addClass('edit').html('Edit');
+        $(clickedRow).find('td .edit').removeClass('edit').addClass('save').html('Save');
+
+    });
+
+    function fnCreateTextBox(value, fieldprop, type) {
+        return '<input data-field="' + fieldprop + '" type="'+ type + '" value="' + value + '" ></input>';
+    }
+
+    function fnResetControls() {
+        var openedTextBox = $('#table').find('input');
+        $.each(openedTextBox, function (k, $cell) {
+            $(openedTextBox[k]).closest('td').html($cell.value);
+        })
+    }
+
+    $('#table').on('click', 'tbody td .save', function (e) {
+
+        var clickedRow = $($(this).closest('td')).closest('tr');
+        var patch = new Object();
+        fnResetControls();
+        
+        $(clickedRow).find('td').each(function () {
+            if ($(this).hasClass('id')) {
+                patch.id = parseInt($(this).html().toString())
+            }
+            else if ($(this).hasClass('text')) {
+                patch.name = ($(this).html().toString())
+            }
+            else if ($(this).hasClass('oddsForFirstTeam')) {
+                patch.oddsForFirstTeam = parseFloat($(this).html().toString())
+            }
+            else if ($(this).hasClass('oddsForSecondTeam')) {
+                patch.oddsForSecondTeam = parseFloat($(this).html().toString())
+            }
+            else if ($(this).hasClass('oddsForDraw')) {
+                patch.oddsForDraw = parseFloat($(this).html().toString())
+            }
+            else if ($(this).hasClass('datetime')) {
+                patch.eventStartDate = ($(this).html().toString())
+            }
+        });
+        
+        var date = new Date(patch.eventStartDate)
+        patch.eventStartDate = (date.getFullYear()) + "-" + (+date.getMonth() + 1) + '-' + (+date.getDate()) + 'T' + (+date.getHours()) + ':' + (+date.getMinutes())
+        console.log(patch);
+        console.log(JSON.stringify(patch))
+
+
+        $.post({
+            url: 'https://localhost:44303/Event/Update',
+            data: JSON.stringify(patch),
+            dataType: 'json',
+            contentType: 'application/json',
+            processData: false,
+            accepts: 'application/json',
+        });
+
+        $('#table tbody tr td .save').removeClass('save').addClass('edit').html('Edit');
+        
+    });
+
+
+
+</script>

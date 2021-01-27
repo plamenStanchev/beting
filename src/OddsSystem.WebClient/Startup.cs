@@ -5,7 +5,6 @@ namespace OddsSystem.WebClient
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using System.Net.Http;
 
     public class Startup
     {
@@ -20,7 +19,10 @@ namespace OddsSystem.WebClient
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson(options =>
+            {
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,6 +38,7 @@ namespace OddsSystem.WebClient
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -46,8 +49,7 @@ namespace OddsSystem.WebClient
             app.UseEndpoints(
                  endpoints =>
                  {
-                     endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-                     endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                     endpoints.MapControllerRoute("default", "{controller=Home}/{action=Preview}/{id?}");
                  });
         }
     }
